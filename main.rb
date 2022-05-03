@@ -2,7 +2,7 @@ require_relative 'lib/reader.rb'
 require_relative 'lib/spell.rb'
 
 # URI кириллицу не сожрёт, только ASCII
-spell_name = 'minor'
+spell_name = 'fast friends'
 
 spell = Reader.find_spell(spell_name)
 

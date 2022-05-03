@@ -13,6 +13,7 @@ module Reader
 
     spell.name = body.css('.item-link').to_s.gsub(/<[^>]*>/, '').gsub(/ \[.*/, '')
 
+    # Нужна проверка на ритуал, сейчас попадает в школу
     spell.level, spell.school = body.css('.size-type-alignment').to_s.gsub(/<[^>]*>/, '').strip.split(', ')
 
     list = body.css('li') - body.css('.desc')
@@ -23,14 +24,18 @@ module Reader
       case strong
         when 'Время накладывания:' then spell.casting_time = i.gsub(/<strong>.*<\/strong>/, '').gsub(/<[^>]*>/, '').strip
         when 'Дистанция:' then spell.range = i.gsub(/<strong>.*<\/strong>/, '').gsub(/<[^>]*>/, '').strip
+        # Компоненты тоже нужно разложить на составляющие - три чекбокса и текстовое поле
         when 'Компоненты:' then spell.components = i.gsub(/<strong>.*<\/strong>/, '').gsub(/<[^>]*>/, '').strip
+        # Нужна проверка на концентрацию, сейчас попадает в длительность
         when 'Длительность:' then spell.duration = i.gsub(/<strong>.*<\/strong>/, '').gsub(/<[^>]*>/, '').strip
         when 'Классы:' then spell.classes = i.gsub(/<strong>.*<\/strong>/, '').gsub(/<[^>]*>/, '').strip
         when 'Архетипы:' then spell.classes = spell.classes + ', ' + i.gsub(/<strong>.*<\/strong>/, '').gsub(/<[^>]*>/, '').strip
+        # Название в кавычках есть не у всех книг. Где нет - поле остаётся пустым
         when 'Источник:' then spell.sourse = i.scan(/\".*\"/).first
       end
     end
 
+    # Нужна проверка на увеличение ячейки заклинаний, "На больших уровнях:"
     spell.description = body.css('.desc').to_s.gsub(/<[^>]*>/, '').strip
 
     spell
